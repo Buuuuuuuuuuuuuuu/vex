@@ -2,7 +2,7 @@
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
 /*    Author:       tang                                                      */
-/*    Created:      2023/9/27 19:40:54                                        */
+/*    Created:      2023/10/22 20:03:37                                       */
 /*    Description:  V5 project                                                */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
@@ -17,17 +17,30 @@ vex::brain       Brain;
 
 
 int main() {
-    while (1) {
-    vex::motor motor1(0);
-    vex::motor motor2(9);
-    motor2.spinTo(-500, rotationUnits::deg,-100, velocityUnits::dps,false);
-    motor1.spinTo(4450, rotationUnits::deg,800, velocityUnits::dps,true);
-    motor1.resetPosition();
-    motor2.resetPosition();
-    motor1.spinTo(500, rotationUnits::deg,100, velocityUnits::dps,false);
-    motor2.spinTo(-4450, rotationUnits::deg,-800, velocityUnits::dps,true);
-    motor1.resetPosition();
-    motor2.resetPosition();
+    while(1){
+    vex::controller  Controller;
+    int dy = Controller.Axis3.position();
+    int dx = Controller.Axis4.position();
+    vex::motor motor1(18);
+    vex::motor motor2(16,true);
+    vex::motor motor3(19);
+    vex::motor motor4(17,true);
+    int vm = 5;
+    float vy = vm*dy;
+    float vl;
+    float vr;
+    if (dx >= 0){
+        vl = vy;
+        vr = vy + 0.5*dx*vm;
+    }
+    else{
+        vr = vy;
+        vl = vy - 0.5*dx*vm;
+    }
+    motor1.spin(fwd, vl, dps);
+    motor2.spin(fwd, vr, dps);
+    motor3.spin(fwd, vl, dps);
+    motor4.spin(fwd, vr, dps);
     }
     return 0;
 }
